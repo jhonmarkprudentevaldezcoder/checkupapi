@@ -35,6 +35,27 @@ app.get("/patients", async (req, res) => {
   }
 });
 
+//register
+app.post("/register", async (req, res) => {
+  const { Email } = req.body;
+
+  try {
+    // Check if the email is already taken
+    const existingUser = await Patients.findOne({ Email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already taken." });
+    }
+
+    // If the email is not taken, create the user
+    const patients = await Patients.create(req.body);
+    res.status(200).json(patients);
+    console.log("User registered!");
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // fetch all doctors
 app.get("/doctors", async (req, res) => {
   try {
